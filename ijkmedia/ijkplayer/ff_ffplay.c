@@ -3114,9 +3114,23 @@ static int read_thread(void *arg)
         av_dict_set_int(&ffp->format_opts, "skip-calc-frame-rate", ffp->skip_calc_frame_rate, 0);
     }
 
-    if (ffp->iformat_name)
+	if (ffp->iformat_name) {
+        av_log(ffp, AV_LOG_INFO, "av_find_input_format noraml begin");
         is->iformat = av_find_input_format(ffp->iformat_name);
+        av_log(ffp, AV_LOG_INFO, "av_find_input_format normal end");
+    } else if (av_stristart(is->filename, "rtmp", NULL)) {
+        av_log(ffp, AV_LOG_INFO, "av_find_input_format rtmp begin");
+        is->iformat = av_find_input_format("flv");
+        av_log(ffp, AV_LOG_INFO, "av_find_input_format rtmp end");
+        ic->probesize = 4096;
+        ic->max_analyze_duration = 2000000;
+        ic->flags |= AVFMT_FLAG_NOBUFFER;
+    }
+	
+    av_log(ffp, AV_LOG_INFO, "avformat_open_input begin");
     err = avformat_open_input(&ic, is->filename, is->iformat, &ffp->format_opts);
+    av_log(ffp, AV_LOG_INFO, "avformat_open_input end");
+	
     if (err < 0) {
         print_error(is->filename, err);
         ret = -1;
@@ -3163,7 +3177,15 @@ static int read_thread(void *arg)
                     break;
                 }
             }
+			
+			ic->probesize=100*1024;
+            ic->max_analyze_duration=5*AV_TIME_BASE;
+            ic->fps_probe_size=0;
+            av_log(ffp, AV_LOG_INFO, "avformat_find_stream_info begin");
             err = avformat_find_stream_info(ic, opts);
+            av_log(ffp, AV_LOG_INFO, "avformat_find_stream_info end");
+			
+			
         } while(0);
         ffp_notify_msg1(ffp, FFP_MSG_FIND_STREAM_INFO);
 
