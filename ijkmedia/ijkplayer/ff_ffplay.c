@@ -3105,7 +3105,7 @@ static int read_thread(void *arg)
     if (av_stristart(is->filename, "rtmp", NULL) ||
         av_stristart(is->filename, "rtsp", NULL)) {
         // There is total different meaning for 'timeout' option in rtmp
-        av_log(ffp, AV_LOG_WARNING, "remove 'timeout' option for rtmp.\n");
+        av_log(ffp, AV_LOG_WARNING, ""mzclogprint remove 'timeout' option for rtmp.\n");
         av_dict_set(&ffp->format_opts, "timeout", NULL, 0);
     }
 
@@ -3115,21 +3115,21 @@ static int read_thread(void *arg)
     }
 
 	if (ffp->iformat_name) {
-        av_log(ffp, AV_LOG_INFO, "av_find_input_format noraml begin");
+        av_log(ffp, AV_LOG_INFO, ""mzclogprint av_find_input_format noraml begin");
         is->iformat = av_find_input_format(ffp->iformat_name);
-        av_log(ffp, AV_LOG_INFO, "av_find_input_format normal end");
+        av_log(ffp, AV_LOG_INFO, ""mzclogprint av_find_input_format normal end");
     } else if (av_stristart(is->filename, "rtmp", NULL)) {
-        av_log(ffp, AV_LOG_INFO, "av_find_input_format rtmp begin");
+        av_log(ffp, AV_LOG_INFO, ""mzclogprint av_find_input_format rtmp begin");
         is->iformat = av_find_input_format("flv");
-        av_log(ffp, AV_LOG_INFO, "av_find_input_format rtmp end");
+        av_log(ffp, AV_LOG_INFO, ""mzclogprint av_find_input_format rtmp end");
         ic->probesize = 4096;
         ic->max_analyze_duration = 2000000;
         ic->flags |= AVFMT_FLAG_NOBUFFER;
     }
 	
-    av_log(ffp, AV_LOG_INFO, "avformat_open_input begin");
+    av_log(ffp, AV_LOG_INFO, ""mzclogprint avformat_open_input begin");
     err = avformat_open_input(&ic, is->filename, is->iformat, &ffp->format_opts);
-    av_log(ffp, AV_LOG_INFO, "avformat_open_input end");
+    av_log(ffp, AV_LOG_INFO, ""mzclogprint avformat_open_input end");
 	
     if (err < 0) {
         print_error(is->filename, err);
@@ -3139,10 +3139,10 @@ static int read_thread(void *arg)
     ffp_notify_msg1(ffp, FFP_MSG_OPEN_INPUT);
 
     if (scan_all_pmts_set)
-        av_dict_set(&ffp->format_opts, "scan_all_pmts", NULL, AV_DICT_MATCH_CASE);
+        av_dict_set(&ffp->format_opts, ""mzclogprint scan_all_pmts", NULL, AV_DICT_MATCH_CASE);
 
     if ((t = av_dict_get(ffp->format_opts, "", NULL, AV_DICT_IGNORE_SUFFIX))) {
-        av_log(NULL, AV_LOG_ERROR, "Option %s not found.\n", t->key);
+        av_log(NULL, AV_LOG_ERROR, ""mzclogprint Option %s not found.\n", t->key);
 #ifdef FFP_MERGE
         ret = AVERROR_OPTION_NOT_FOUND;
         goto fail;
@@ -3181,9 +3181,9 @@ static int read_thread(void *arg)
 			ic->probesize=100*1024;
             ic->max_analyze_duration=5*AV_TIME_BASE;
             ic->fps_probe_size=0;
-            av_log(ffp, AV_LOG_INFO, "avformat_find_stream_info begin");
+            av_log(ffp, AV_LOG_INFO, ""mzclogprint avformat_find_stream_info begin");
             err = avformat_find_stream_info(ic, opts);
-            av_log(ffp, AV_LOG_INFO, "avformat_find_stream_info end");
+            av_log(ffp, AV_LOG_INFO, ""mzclogprint avformat_find_stream_info end");
 			
 			
         } while(0);
